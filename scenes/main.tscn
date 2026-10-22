@@ -1,0 +1,189 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
+[ext_resource type="Script" path="res://scripts/fx/shake_camera.gd" id="2_camera"]
+[ext_resource type="Script" path="res://scripts/fx/warp_grid.gd" id="3_grid"]
+[ext_resource type="Script" path="res://scripts/core/arena_block.gd" id="4_block"]
+[ext_resource type="Script" path="res://scripts/combat/spike_strip.gd" id="5_spikes"]
+[ext_resource type="PackedScene" path="res://scenes/boss.tscn" id="6_boss"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="7_player"]
+[ext_resource type="Script" path="res://scripts/fx/fx_layer.gd" id="8_fx"]
+[ext_resource type="Script" path="res://scripts/ui/hud.gd" id="9_hud"]
+[ext_resource type="Script" path="res://scripts/debug/debug_tools.gd" id="10_debug"]
+[ext_resource type="Shader" path="res://shaders/grayscale.gdshader" id="11_gray"]
+
+[sub_resource type="Environment" id="Environment_neon"]
+background_mode = 3
+glow_enabled = true
+glow_levels/1 = 0.4
+glow_levels/2 = 1.0
+glow_levels/3 = 0.7
+glow_levels/4 = 0.25
+glow_levels/5 = 0.0
+glow_intensity = 0.8
+glow_strength = 1.0
+glow_bloom = 0.0
+glow_blend_mode = 1
+glow_hdr_threshold = 1.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_title"]
+font_size = 96
+outline_size = 0
+
+[sub_resource type="LabelSettings" id="LabelSettings_hint"]
+font_size = 24
+font_color = Color(0.55, 0.6, 0.72, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gray"]
+shader = ExtResource("11_gray")
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_main")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_neon")
+
+[node name="Camera" type="Camera2D" parent="."]
+position = Vector2(960, 540)
+ignore_rotation = false
+script = ExtResource("2_camera")
+
+[node name="WarpGrid" type="Node2D" parent="."]
+script = ExtResource("3_grid")
+
+[node name="Arena" type="Node2D" parent="."]
+
+[node name="Ceiling" type="StaticBody2D" parent="Arena"]
+script = ExtResource("4_block")
+size = Vector2(1920, 40)
+
+[node name="LeftWall" type="StaticBody2D" parent="Arena"]
+script = ExtResource("4_block")
+size = Vector2(40, 1080)
+
+[node name="RightWall" type="StaticBody2D" parent="Arena"]
+position = Vector2(1880, 0)
+script = ExtResource("4_block")
+size = Vector2(40, 1080)
+
+[node name="FloorLeft" type="StaticBody2D" parent="Arena"]
+position = Vector2(0, 980)
+script = ExtResource("4_block")
+size = Vector2(680, 100)
+
+[node name="FloorRight" type="StaticBody2D" parent="Arena"]
+position = Vector2(1240, 980)
+script = ExtResource("4_block")
+size = Vector2(680, 100)
+
+[node name="PitFloor" type="StaticBody2D" parent="Arena"]
+position = Vector2(680, 1020)
+script = ExtResource("4_block")
+size = Vector2(560, 60)
+
+[node name="PitBridgeForBoss" type="StaticBody2D" parent="Arena"]
+position = Vector2(680, 980)
+script = ExtResource("4_block")
+size = Vector2(560, 8)
+kind = 2
+
+[node name="CenterPlatform" type="StaticBody2D" parent="Arena"]
+position = Vector2(800, 700)
+script = ExtResource("4_block")
+size = Vector2(320, 20)
+kind = 1
+
+[node name="CatwalkLeft" type="StaticBody2D" parent="Arena"]
+position = Vector2(40, 560)
+script = ExtResource("4_block")
+size = Vector2(380, 16)
+kind = 1
+
+[node name="CatwalkRight" type="StaticBody2D" parent="Arena"]
+position = Vector2(1500, 560)
+script = ExtResource("4_block")
+size = Vector2(380, 16)
+kind = 1
+
+[node name="Spikes" type="Area2D" parent="Arena"]
+position = Vector2(680, 1020)
+collision_layer = 16
+collision_mask = 0
+monitoring = false
+script = ExtResource("5_spikes")
+is_hazard = true
+
+[node name="Boss" parent="." instance=ExtResource("6_boss")]
+position = Vector2(1640, 944)
+
+[node name="Player" parent="." instance=ExtResource("7_player")]
+position = Vector2(260, 960)
+
+[node name="Enemies" type="Node2D" parent="."]
+
+[node name="Projectiles" type="Node2D" parent="."]
+
+[node name="Fx" type="Node2D" parent="."]
+script = ExtResource("8_fx")
+
+[node name="HudLayer" type="CanvasLayer" parent="."]
+
+[node name="Hud" type="Control" parent="HudLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("9_hud")
+
+[node name="EndTitle" type="Label" parent="HudLayer/Hud"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -600.0
+offset_top = -120.0
+offset_right = 600.0
+offset_bottom = 10.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "VICTORY"
+label_settings = SubResource("LabelSettings_title")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="EndHint" type="Label" parent="HudLayer/Hud"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -400.0
+offset_top = 20.0
+offset_right = 400.0
+offset_bottom = 60.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "R to retry"
+label_settings = SubResource("LabelSettings_hint")
+horizontal_alignment = 1
+
+[node name="Debug" type="Node" parent="."]
+script = ExtResource("10_debug")
+
+[node name="Grayscale" type="CanvasLayer" parent="Debug"]
+layer = 100
+
+[node name="Overlay" type="ColorRect" parent="Debug/Grayscale"]
+material = SubResource("ShaderMaterial_gray")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2

@@ -1,0 +1,22 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scripts/combat/enemy_shot.gd" id="1_shot"]
+[ext_resource type="Script" path="res://scripts/core/geo_shape.gd" id="2_geo"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_shot"]
+radius = 9.0
+
+[node name="EnemyShot" type="Area2D"]
+collision_layer = 64
+collision_mask = 1
+script = ExtResource("1_shot")
+
+[node name="Shape" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_shot")
+
+[node name="Art" type="Node2D" parent="."]
+script = ExtResource("2_geo")
+kind = 1
+size = Vector2(22, 22)
+role = 7
+glow = 2.0

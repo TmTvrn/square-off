@@ -1,0 +1,6 @@
+# Godot cache (.import files stay committed: they hold import settings)
+.godot/
+# Debug captures (see scripts/debug/debug_tools.gd)
+captures/
+# OS
+.DS_Store
